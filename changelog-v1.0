@@ -1,0 +1,15 @@
+Changelog for T99's /scriptbin/ bash scripts.
+- v1.0
+	- Added 'inf'.
+		- Inf (obviously standing for information) is a simple utility to gather information, some static, some not, to display to the user
+		  such as current system time, internet IP, SSH connection port, or the shell in which the current user is working.
+
+	- Added 'sessionlength'.
+		- Sessionlength (personally alias'd as slen) outputs the current session length from $SECONDS in an easy to read, script friendly
+		  format.
+
+	- Added 'bak'.
+		- Bak takes filename/directory outputs and creates copies of them, newly suffixed with '.bak'.
+
+	- Many things in these scripts are sure to stop working on other people's machines, so submit bug reports to the repository so that I can try
+	  to make the script more portable.

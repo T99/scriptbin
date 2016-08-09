@@ -1,0 +1,16 @@
+#!/bin/bash
+#Made by Trevor Sears <trevorsears.main@gmail.com>. Bak is a simple utility to create a backup file of a number of files.
+
+if [ "$#" -eq "0" ]
+then
+	echo "You must give a file you'd like to backup."
+elif [ "$#" -ge "1" ]
+then
+	for i in "$@"
+	do
+		ibak=$(echo $i".bak")
+		cp "$i" "$ibak"
+	done
+else
+	echo "An error has occured..."
+fi

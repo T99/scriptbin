@@ -1,0 +1,77 @@
+#!/bin/bash
+#Made by Trevor Sears <trevorsears.main@gmail.com>.
+#Inf is used to print to the screen commonly needed/useful information.
+
+#USER/SYSTEM INFORMATION (VARIABLES)
+	USER=$(echo $USER)
+	SHELL=$(getent passwd $USER | grep -Po '\/bin\/\w+')
+	SYSTEMVERSION=$(cat /etc/*release | grep -Po '(?<=VERSION=")[^"]+')
+	WORKINGDIR=$(pwd)
+	DATE=$(date +%A,\ %B\ %d,\ %Y\ -\ %r)
+
+#NETWORK INFORMATION (VARIABLES)
+	HOSTNAME=$(hostname)
+	NUMOFNETWORKADAPTERS=$(ip addr | grep -Pc '[0-9]{1}: ')
+	ISONLINE=$(if nc -zw1 google.com 80; then echo "Yes"; fi)
+	MACADDRESS=$(ip link | awk -F: '/state UP/{print $2}' | while read updev; do ip addr show $updev | grep -Po '(?<=link/ether )[^/]{17}'; done)
+	LOCALIPV4=$(ip link | awk -F: '/state UP/{print $2}' | while read updev; do ip addr show $updev | grep -Po '(?<=inet )[^/]+'; done)
+	LOCALIPV6=$(ip link | awk -F: '/state UP/{print $2}' | while read updev; do ip addr show $updev | grep -Po '(?<=inet6 )[^/]+'; done)
+	INTERNETIP=$(curl -s icanhazip.com)
+
+#SSH CONNECTION INFORMATION (VARIABLES)
+	CONNECTEDSSHUSER=$(who the hell | grep -Po '([0-9]{1,3}\.){3}[0-9]{1,3}')
+	CONNECTIONPORT=$(grep -Po '(?<=Port )\d+' /etc/ssh/sshd_config)
+	SESSIONLENGTH=$(if [ -s ~/dev/temp/sessionlength ]; then cat ~/dev/temp/sessionlength; else echo "SESSIONLENGTH.SH IS NOT RUNNING"; fi)
+	#IF YOU WISH TO HAVE THIS INCLUDED AND WORK CORRECTLY YOU GIVE IT THE PATH TO ANOTHER OF MY BASH SCRIPTS, SESSIONLENGTH.
+
+#PACKAGE INFORMATION (VARIABLES)
+	NUMBEROFINSTALLEDPACKAGES=$(dpkg -l | wc -l)
+	REBOOTREQUIRED=$(if [ -f /var/run/reboot-required ]; then echo "Yes"; else echo "No"; fi)
+
+nl () {
+
+	echo "$reset_color$(tput sgr0)"
+
+}
+
+header () {
+
+	echo -e "\t$(tput smul)$1$(tput rmul):"
+
+}
+
+information () {
+
+	echo -e "\t\t$(tput bold)$1:$(tput sgr0) $2"
+
+}
+
+nl
+header "USER/SYSTEM INFORMATION"
+nl
+information "USER" "$USER"
+information "SHELL" "$SHELL"
+information "SYSTEM VERSION" "$SYSTEMVERSION"
+information "WORKING DIRECTORY" "$WORKINGDIR"
+information "SYSTEM TIME" "$DATE"
+nl
+header "NETWORK INFORMATION"
+nl
+information "HOSTNAME" "$HOSTNAME"
+information "MAC ADDRESS" "$MACADDRESS"
+information "LOCAL IPV4" "$LOCALIPV4"
+information "LOCAL IPV6" "$LOCALIPV6"
+information "INTERNET IP" "$INTERNETIP"
+information "INTERNET CONNECTION" "$ISONLINE"
+#information "NUMBER OF NETWORK ADAPTERS" "$NUMOFNETWORKADAPTERS"
+nl
+header "SSH CONNECTION INFORMATION"
+nl
+information "CONNECTION ORIGIN" "$CONNECTEDSSHUSER"
+information "CONNECTION PORT" "$CONNECTIONPORT"
+information "CONNECTION LENGTH" "$SESSIONLENGTH"
+nl
+header "PACKAGE INFORMATION"
+nl
+information "NUMBER OF INSTALLED PACKAGES" "$NUMBEROFINSTALLEDPACKAGES"
+information "REBOOT REQUIRED TO UPDATE" "$REBOOTREQUIRED"
