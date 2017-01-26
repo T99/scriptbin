@@ -1,0 +1,67 @@
+#!/bin/bash
+#Made by Trevor Sears <trevorsears.main@gmail.com>.
+#Slen (sessionlength) creates and continuously updates a temp file (/tmp/sessionlength), corresponding to the length of the current session.
+
+if [ ! -e /home/trevor/dev/temp/sessionlength ]
+then
+	touch /home/trevor/dev/temp/sessionlength
+
+fi
+
+if [ ! -e /home/trevor/dev/temp/sessionlengthpid ]
+then
+	touch /home/trevor/dev/temp/sessionlength.pid
+
+fi
+
+PATHTOTEMPSESSIONLENGTHFILE="/home/$USER/dev/temp/sessionlength"
+#Set this to whatever you like, or where ever you choose to keep temporary files (an obvious choice being /tmp/sessionlength).
+
+while true
+do
+
+SECONDSINSESSION=$SECONDS
+
+SECONDSINMINUTE=60
+SECONDSINHOUR=3600
+SECONDSINDAY=86400
+
+DAYSINSESSION=$(expr "$SECONDSINSESSION" / "$SECONDSINDAY")
+DAY_REMAINDER=$(expr "$SECONDSINSESSION" % "$SECONDSINDAY")
+HOURSINSESSION=$(expr "$DAY_REMAINDER" / "$SECONDSINHOUR")
+HOUR_REMAINDER=$(expr "$DAY_REMAINDER" % "$SECONDSINHOUR")
+MINUTESINSESSION=$(expr "$HOUR_REMAINDER" / "$SECONDSINMINUTE")
+SECONDSINSESSION=$(expr "$HOUR_REMAINDER" % "$SECONDSINMINUTE")
+
+if [ $MINUTESINSESSION -gt 0 ]
+then
+
+	if [ $HOURSINSESSION -gt 0 ]
+	then
+
+		if [ $DAYSINSESSION -gt 0 ]
+		then
+
+			echo "$DAYSINSESSION days, $HOURSINSESSION hours, $MINUTESINSESSION minutes, and $SECONDSINSESSION seconds." > $PATHTOTEMPSESSIONLENGTHFILE
+
+		else
+
+			echo "$HOURSINSESSION hours, $MINUTESINSESSION minutes, and $SECONDSINSESSION seconds." > $PATHTOTEMPSESSIONLENGTHFILE
+
+		fi
+
+	else
+
+		echo "$MINUTESINSESSION minutes and $SECONDSINSESSION seconds." > $PATHTOTEMPSESSIONLENGTHFILE
+
+	fi
+
+else
+
+	echo "$SECONDSINSESSION seconds." > $PATHTOTEMPSESSIONLENGTHFILE
+
+fi
+
+sleep 1
+
+done &

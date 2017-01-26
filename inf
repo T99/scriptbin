@@ -1,0 +1,111 @@
+#!/bin/bash
+# Made by Trevor Sears <trevorsears.main@gmail.com>.
+# Inf is used to print to the screen commonly needed/useful information.
+# DESIGNED AND PROGRAMMED FOR ARCH - COMPATIBILITY ISSUES WITH OTHER DISTROS MAY ARISE.
+
+STARTTIME=`date +%s.%N`
+
+#USER INFORMATION (VARIABLES)
+	USER=$(echo $USER)
+	TTY=$(tty)
+	SHELL=$(getent passwd $USER | grep -Po '\/bin\/\w+')
+	WORKINGDIR=$(echo `pwd` [ `dirs` ])
+	DATE=$(date +%A,\ %B\ %d,\ %Y\ -\ %r)
+
+#SOFTWARE/OS INFORMATION (VARIABLES)
+	KERNAL=$(uname -o)
+	OSVERSION=$(uname -r)
+
+#HARDWARE INFORMATION (VARIABLES)
+	PROCESSOR=$(lscpu | grep -Po "Model name:\s+\K.+")
+	NUMBEROFCORES=$(lscpu | grep -Pom1 "CPU\(s\):\s+\K\d+")
+	GRAPHICSPROCESSOR=$(lspci | grep -Po "((VGA|2d|3d).+\[)\K[A-Za-z0-9 ]+")
+	SCREENRESOLUTION=$(xrandr --current | grep -Po "(?<=current )\d+ x \d+")
+	CPUARCHITECTURE=$(lscpu)
+	RAMUSAGE=$()
+
+#NETWORK INFORMATION (VARIABLES)
+	HOSTNAME=$(hostname)
+	NUMOFNETWORKADAPTERS=$(ip addr | grep -Pc '[0-9]{1}: ')
+	ISONLINE=$(echo Feature not yet functional.)
+	MACADDRESS=$(ip link | awk -F: '/state UP/{print $2}' | while read updev; do ip addr show $updev | grep -Po '(?<=link/ether )[^/]{17}'; done)
+	LOCALIPV4=$(ip link | awk -F: '/state UP/{print $2}' | while read updev; do ip addr show $updev | grep -Po '(?<=inet )[^/]+'; done)
+	LOCALIPV6=$(ip link | awk -F: '/state UP/{print $2}' | while read updev; do ip addr show $updev | grep -Po '(?<=inet6 )[^/]+'; done)
+	INTERNETIP=$(curl -s icanhazip.com/s)
+
+#SSH CONNECTION INFORMATION (VARIABLES)
+	CONNECTEDSSHUSER=$(who the hell | grep -Po '([0-9]{1,3}\.){3}[0-9]{1,3}')
+	CONNECTIONPORT=$(grep -Po '(?<=Port )\d+' /etc/ssh/sshd_config)
+	SESSIONLENGTH=$(if [ -s ~/dev/temp/sessionlength ]; then cat ~/dev/temp/sessionlength; else echo "SESSIONLENGTH.SH IS NOT RUNNING"; fi)
+	#IF YOU WISH TO HAVE THIS INCLUDED AND WORK CORRECTLY YOU GIVE IT THE PATH TO ANOTHER OF MY BASH SCRIPTS, SESSIONLENGTH.
+
+#PACKAGE INFORMATION (VARIABLES)
+	NUMBEROFINSTALLEDPACKAGES=$(pacman -Q | wc -l)
+	REBOOTREQUIRED=$()
+
+nl () {
+
+	echo "$reset_color$(tput sgr0)"
+
+}
+
+header () {
+
+	echo -e "\t$(tput smul)$1$(tput rmul):"
+
+}
+
+information () {
+
+	echo -e "\t\t$(tput bold)$1:$(tput sgr0) $2"
+
+}
+
+nl
+header "USER INFORMATION"
+nl
+information "USER" "$USER"
+information "TTY" "$TTY"
+information "SHELL" "$SHELL"
+information "WORKING DIRECTORY" "$WORKINGDIR"
+information "SYSTEM TIME" "$DATE"
+nl
+header "SOFTWARE/OS INFORMATION"
+nl
+information "KERNAL" "$KERNAL"
+information "OS VERSION" "$OSVERSION"
+nl
+header "HARDWARE INFORMATION"
+nl
+information "PROCESSOR" "$PROCESSOR"
+information "NUMBER OF CORES" "$NUMBEROFCORES"
+information "RAM USAGE" "$RAMUSAGE"
+information "GRAPHICS CARD" "$GRAPHICSPROCESSOR"
+information "SCREEN RESOLUTION" "$SCREENRESOLUTION"
+nl
+header "NETWORK INFORMATION"
+nl
+information "HOSTNAME" "$HOSTNAME"
+information "MAC ADDRESS" "$MACADDRESS"
+information "LOCAL IPV4" "$LOCALIPV4"
+information "LOCAL IPV6" "$LOCALIPV6"
+information "INTERNET" "$ISONLINE"
+information "PUBLICFACING IP" "$INTERNETIP"
+nl
+header "SSH CONNECTION INFORMATION"
+nl
+information "CONNECTION ORIGIN" "$CONNECTEDSSHUSER"
+information "CONNECTION PORT" "$CONNECTIONPORT"
+information "CONNECTION LENGTH" "$SESSIONLENGTH"
+nl
+header "PACKAGE INFORMATION"
+nl
+information "INSTALLED PACKAGES" "$NUMBEROFINSTALLEDPACKAGES"
+nl
+
+ENDTIME=`date +%s.%N`
+RUNTIME=$( printf %.4f $(echo "x=$ENDTIME - $STARTTIME; if(x<1) print 0; x" | bc -l ))
+
+nl
+echo -e "\tRuntime: $RUNTIME seconds."
+nl
