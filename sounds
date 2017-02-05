@@ -1,0 +1,63 @@
+#!/bin/bash
+# Made by Trevor Sears <trevorsears.main@gmail.com>.
+# Sounds in meant to output nicely formatted volume (pamixer) and mute condition.
+# DESIGNED AND PROGRAMMED FOR PAMIXER.
+
+VOLUME=$(pamixer --get-volume) 
+MUTE=$(pamixer --get-mute)
+
+if [ $# -gt 2 ]; then
+	echo "You can only get volume (-v), mute(-m), or both (-vm|-mv)."
+	exit 1
+
+elif [ $# -lt 1 ]; then
+	echo "You passed no arguments. Try either -v or -m."
+
+elif [ ${#1} -gt 3 -a "$1" != "--help" ]; then
+	echo "Sounds does not accept an argument longer than two characters."
+
+elif [ "$1" == "-v" ]; then
+	echo "Volume: $VOLUME"
+
+elif [ "$1" == "-m" ]; then
+	if [ "$MUTE" == true ]; then
+		echo "Volume is muted."
+
+	elif [ "$MUTE" == false ]; then
+		echo "Volume is not muted."
+
+	fi
+elif [ "$1" == "-vm" ] || [ "$1" == "-v" -a "$2" == "-m" ]; then
+	echo "Volume: $VOLUME"
+
+	if [ "$MUTE" == true ]; then
+		echo "Volume is muted."
+
+	elif [ "$MUTE" == false ]; then
+		echo "Volume is not muted."
+	fi
+
+
+elif [ "$1" == "-mv" ] || [ "$1" == "-m" -a "$2" == "-v" ]; then
+	if [ "$MUTE" == true ]; then
+		echo "Volume is muted."
+
+	elif [ "$MUTE" == false ]; then
+		echo "Volume is not muted."
+
+	fi
+	echo "Volume: $VOLUME"
+
+elif [ "$1" == "--help" ]; then
+	echo
+	echo "Usage:"
+	echo "sounds [-v] [-m]"
+	echo
+	echo "Options:"
+	echo -e "\t-v\t Outputs the formatted volume to stdout."
+	echo -e "\t-m\t Outputs the formatted mute condition to stdout."
+	echo
+
+else
+	echo "Sounds did not understand the flags or arguments you provided."
+fi

@@ -1,0 +1,6 @@
+#!/bin/bash
+# Made by Trevor Sears <trevorsears.main@gmail.com>.
+# Brightness is meant to allow the user to easily change the current backlight level.
+# DESIGNED AND PROGRAMMED FOR PAMIXER.
+
+echo  "Brightness level at $(printf %.0f $(xbacklight -get))%."

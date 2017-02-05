@@ -43,6 +43,9 @@ STARTTIME=`date +%s.%N`
 	NUMBEROFINSTALLEDPACKAGES=$(pacman -Q | wc -l)
 	REBOOTREQUIRED=$()
 
+#MISC & META
+	INPROGRESS=$(echo "This feature is still in progress.")
+
 nl () {
 
 	echo "$reset_color$(tput sgr0)"
@@ -79,7 +82,7 @@ header "HARDWARE INFORMATION"
 nl
 information "PROCESSOR" "$PROCESSOR"
 information "NUMBER OF CORES" "$NUMBEROFCORES"
-information "RAM USAGE" "$RAMUSAGE"
+information "RAM USAGE" "$INPROGRESS"
 information "GRAPHICS CARD" "$GRAPHICSPROCESSOR"
 information "SCREEN RESOLUTION" "$SCREENRESOLUTION"
 nl
@@ -89,14 +92,14 @@ information "HOSTNAME" "$HOSTNAME"
 information "MAC ADDRESS" "$MACADDRESS"
 information "LOCAL IPV4" "$LOCALIPV4"
 information "LOCAL IPV6" "$LOCALIPV6"
-information "INTERNET" "$ISONLINE"
+information "INTERNET" "$INPROGRESS"
 information "PUBLICFACING IP" "$INTERNETIP"
 nl
 header "SSH CONNECTION INFORMATION"
 nl
 information "CONNECTION ORIGIN" "$CONNECTEDSSHUSER"
 information "CONNECTION PORT" "$CONNECTIONPORT"
-information "CONNECTION LENGTH" "$SESSIONLENGTH"
+information "CONNECTION LENGTH" "$INPROGRESS"
 nl
 header "PACKAGE INFORMATION"
 nl
